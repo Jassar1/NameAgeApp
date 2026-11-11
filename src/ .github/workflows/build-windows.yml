@@ -1,0 +1,30 @@
+
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Install compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-mingw-w64-x86-64
+
+      - name: Build EXE
+        run: |
+          x86_64-w64-mingw32-g++ -std=c++17 -O2 -static src/main.cpp -o NameAgeApp.exe
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: NameAgeApp-Windows
+          path: NameAgeApp.exe
